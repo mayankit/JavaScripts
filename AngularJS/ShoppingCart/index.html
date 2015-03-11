@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="shopping">
+
+<head>
+  <meta charset="utf-8" />
+  <title>AngularJS Hello World</title>
+  <script>
+    document.write('<base href="' + document.location + '" />');
+  </script>
+  <link rel="stylesheet" href="style.css" />
+  <script data-require="angular.js@1.3.x" src="https://code.angularjs.org/1.3.14/angular.js" data-semver="1.3.14"></script>
+  <script src="app.js"></script>
+</head>
+
+<body ng-controller="ShoppingCtrl">
+ 
+ <h1>Oder till Now</h1>
+ <table>
+ <tr><td>Item Name</td><td>Quantity</td><td>Price</td><td>Total</td><td>Remove</td></tr>
+ <tr ng-repeat="item in items">
+ <td>{{item.name}}</td>
+ <td><input ng-model="item.quantity"></td>
+ <td>{{item.price |currency:'Rs'}}</td>
+ <td>Total: {{item.price * item.quantity | currency:'Rs'}}</td>
+ <td><button ng-click="remove($index)">Remove</button></td>
+ </tr>
+ </table>
+   
+            <select  ng-model="itemsInList" ng-options="x.name for x in itemsList">
+              <option ng-if="!selectedItem" value="">Select item</option>
+            </select>
+             <input   ng-model="itemsInList.quantity" size="10" placeholder="quantity"/>
+             <span  ng-model="itemsInList.price">{{itemsInList.price}}</span>
+            <input class="btn-primary" type="button" value="add" ng-click="addItem()"/>
+
+  
+</body>
+
+</html>
