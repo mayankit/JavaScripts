@@ -6,3 +6,11 @@ app.controller('HelloWorldCtrl',function($scope){
 
 
 });
+
+
+app.controller('HelloCtrl',function($scope){
+
+	$scope.message = {text:'Mayank'};
+
+
+});
