@@ -1,0 +1,137 @@
+<!--Drawing divs
+
+Last updated 2012 December 30
+
+It’s time to start drawing with data.
+
+Let’s continue working with our simple data set from last time:
+
+var dataset = [ 5, 10, 15, 20, 25 ];
+
+We’ll use this to generate a super-simple bar chart. Bar charts are essentially just rectangles, and an HTML <div> is the easiest way to draw a rectangle. (Then again, to a web browser, everything is a rectangle, so you could easily adapt this example to use spans or whatever element you prefer.)
+
+This div could work well as a data bar:
+
+<div style="display: inline-block;
+            width: 20px;
+            height: 75px;
+            background-color: teal;"></div>
+
+(Among web standards folks, this is a semantic no-no. Normally, one shouldn’t use an empty div for purely visual effect, but coding tutorials are notable exceptions.)
+
+Because this is a div, its width and height are set with CSS styles. Each bar in our chart will share the same display properties (except for height), so I’ll put those shared styles into a class called bar:
+
+div.bar {
+    display: inline-block;
+    width: 20px;
+    height: 75px;   /* We'll override this later */
+    background-color: teal;
+}
+
+Now each div needs to be assigned the bar class, so our new CSS rule will apply. If you were writing the HTML code by hand, you would write:
+
+<div class="bar"></div>
+
+Using D3, to add a class to an element, we use the selection.attr() method. It’s important to understand the difference between attr() and its close cousin, style().
+Setting Attributes
+
+attr() is used to set an HTML attribute and its value on an element. An HTML attribute is any property/value pair that you could include between an element’s <> brackets. For example, these HTML elements
+
+<p class="caption">
+<select id="country">
+<img src="logo.png" width="100px" alt="Logo" />
+
+contain a total of five attributes (and corresponding values), all of which could be set with attr():
+
+class   |   caption
+id      |   country
+src     |   logo.png
+width   |   100px
+alt     |   Logo
+
+To give our divs a class of bar, we can use:
+
+.attr("class", "bar")
+
+A Note on Classes
+
+Note that an element’s class is stored as an HTML attribute. The class, in turn, is used to reference a CSS style rule. This may cause some confusion because there is a difference between setting a class (from which styles are inferred) and applying a style directly to an element. You can do both with D3. Although you should use whatever approach makes the most sense to you, I recommend using classes for properties that are shared by multiple elements, and applying style rules directly only when deviating from the norm. (In fact, that’s what we’ll do in just a moment.)
+
+I also want to briefly mention another D3 method, classed(), which can be used to quickly apply or remove classes from elements. The line of code above could be rewritten as:
+
+.classed("bar", true)
+
+Back to the Bars
+
+Putting it all together with our data set, here is the complete D3 code so far:
+
+var dataset = [ 5, 10, 15, 20, 25 ];
+
+d3.select("body").selectAll("div")
+    .data(dataset)
+    .enter()
+    .append("div")
+    .attr("class", "bar");
+
+Five divs masquerading as one
+
+See this demo page with that code. Make sure to view the source, and open your web inspector to see what’s going on. You should see five vertical bars, one generated for each point in our data set, although with no space between them, they look like one big rectangle.
+Setting Styles
+
+The style() method is used to apply a CSS property and value directly to an HTML element. This is the equivalent of including CSS rules within a style attribute right in your HTML, as in:
+
+<div style="height: 75px;"></div>
+
+In a bar chart, the height of each bar must be a function of the corresponding data value. So let’s add this to the end of our D3 code:
+
+.style("height", function(d) {
+    return d + "px";
+});
+
+A small bar chart!
+
+See this demo page with that code. You should see a very small bar chart!
+
+When D3 loops through each data point, the value of d will be set to that of the corresponding data point. So we are setting a height value of d (the current data value) plus px (to specify the units are pixels). The resulting heights will be 5px, 10px, 15px, 20px, and 25px.
+
+This looks a little bit silly, so let’s make those bars taller
+
+.style("height", function(d) {
+    var barHeight = d * 5;  //Scale up by factor of 5
+    return barHeight + "px";
+});
+
+and add some space to the right of each bar, to space things out:
+
+margin-right: 2px;
+
+The final bar chart
+
+Nice! We could go to SIGGRAPH with that chart.
+
+Here’s the final demo page with that code. Again, view the source and use the web inspector to contrast the original HTML against the final DOM. -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Test</title>
+        <script type="text/javascript" src="d3/d3.v3.min.js"></script>
+        <style >
+        div.bar{
+               display: inline-block;
+               width: 20px;
+               height: 75px;   /* We'll override this later */
+               background-color: teal;
+
+            }
+        </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+           var dataset = [ 5, 10, 15, 20, 25 ];
+           d3.select("body").selectAll("div").data(dataset).enter().append("div")
+           .classed("bar",true);
+        </script>
+    </body>
+</html> 

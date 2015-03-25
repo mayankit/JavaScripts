@@ -1,0 +1,122 @@
+<!--Using your data
+
+Last updated 2012 December 30
+
+Once you’ve loaded in your data and bound it to newly created elements in the DOM, how can you use it? Here’s our code from last time:
+
+var dataset = [ 5, 10, 15, 20, 25 ];
+
+d3.select("body").selectAll("p")
+    .data(dataset)
+    .enter()
+    .append("p")
+    .text("New paragraph!");
+
+Let’s change the last line to:
+
+    .text(function(d) { return d; });
+
+Check out what the new code does on this demo page.
+
+Whoa! We used our data to populate the contents of each paragraph, all thanks to the magic of the data() method. You see, when chaining methods together, anytime after you call data(), you can create an anonymous function that accepts d as input. The magical data() method ensures that d is set to the corresponding value in your original data set, given the current element at hand.
+
+The value of “the current element” changes over time as D3 loops through each element. For example, when looping through the third time, our code creates the third p tag, and d will correspond to the third value in our data set (or dataset[2]). So the third paragraph gets text content of “15”.
+High-functioning
+
+In case you’re new to writing your own functions (a.k.a. methods), the basic structure of a function definition is:
+
+function(input_value) {
+    //Calculate something here
+    return output_value;
+}
+
+The function we used above is dead simple, nothing fancy
+
+function(d) {
+    return d;
+}
+
+and it’s wrapped within D3’s text() function, so whatever our function returns is handed off to text().
+
+.text(function(d) {
+    return d;
+});
+
+But we can (and will) get much fancier, because you can customize these functions however you want. Yes, it’s the pleasure and pain of writing your own JavaScript. We can define our own custom functions however we want. Maybe you’d like to add some extra text, which produces this result.
+
+.text(function(d) {
+    return "I can count up to " + d;
+});
+
+Data Wants to be Held
+
+You may be wondering why you have to write out function(d)... instead of just d on its own. For example, this won’t work:
+
+.text("I can count up to " + d);
+
+In this context, without wrapping d in an anonymous function, d has no value. Think of d as a lonely little placeholder value that just needs a warm, containing hug from a kind, caring function’s parantheses. (Extending this metaphor further, yes, it is creepy that the hug is being given by an anonymous function — stranger danger! — but that only confuses matters.)
+
+Here is d being gently and appropriately held by a function:
+
+.text(function(d) {  // <-- Note tender embrace at left
+    return "I can count up to " + d;
+});
+
+The reason for this syntax is that .text(), attr(), and many other D3 methods take a function as an argument. For example, text() can take either simply a static string of text as an argument:
+
+.text("someString")
+
+…or the result of a function:
+
+.text(someFunction())
+
+…or an anonymous function itself can be the argument, such as when you write:
+
+.text(function(d) {
+    return d;
+})
+
+Above, you are defining an anonymous function. If D3 sees a function there, it will call that function, while handing off the current datum d as the function’s argument. Without the function in place, D3 can’t know to whom it should hand off the argument d.
+
+At first, this may seem silly and like a lot of extra work to just get at d, but the value of this approach will become clear as we work on more complex pieces.
+Beyond Text
+
+Things get a lot more interesting when we explore D3’s other methods, like attr() and style(), which allow us to set HTML attributes and CSS properties on selections, respectively.
+
+For example, adding one more line to our code produces this result.
+
+.style("color", "red");
+
+All the text is now red; big deal. But we could use a custom function to make the text red only if the current datum exceeds a certain threshold. So we revise that last line to use a function:
+
+.style("color", function(d) {
+    if (d > 15) {   //Threshold of 15
+        return "red";
+    } else {
+        return "black";
+    }
+});
+
+See that code in action. Notice how the first three lines are black, but once d exceeds the arbitrary threshold of 15, the text turns red.
+
+In the next tutorial, we’ll use attr() and style() to manipulate divs, generating a simple bar chart — our first visualization! -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Test</title>
+        <script type="text/javascript" src="d3/d3.v3.min.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+           var dataset = [ 5, 10, 15, 20, 25 ];
+           d3.select("body").selectAll("p").data(dataset).enter().append("p")
+           .text(function(d){
+                
+              return "I can count up to " + d;
+           })
+           .style("color","red");
+        </script>
+    </body>
+</html> 
